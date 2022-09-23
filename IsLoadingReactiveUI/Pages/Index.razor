@@ -1,0 +1,42 @@
+﻿@using IsLoadingReactiveUI.ViewModels
+
+@inject MyViewModel Vm
+
+@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<strong>Loading: @Vm.IsLoading</strong>
+<br />
+<br />
+<strong>Exception: @Vm.Exception</strong>
+<br />
+<br />
+<br />
+<button @onclick="(_ => Submit(new Form { Throw = false }))">1. Submit (dont throw)</button>
+<br />
+<br />
+<button @onclick="(_ => Vm.Trigger = true )">2. Submit (via InvokeCommand and throw)</button>
+<br />
+<br />
+<button @onclick="(_ => Submit(new Form { Throw = true }))">3. Submit (throw)</button>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Vm.PropertyChanged += (o, e) => StateHasChanged();
+    }
+
+    private void Submit(Form form)
+    {
+        Vm.Submit
+            .Execute(form)
+            .Subscribe(_ =>
+            {
+                //..
+            });
+    }
+}
